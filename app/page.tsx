@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type Time = {
   hours: number;
@@ -75,6 +76,9 @@ function TimeInput({ label, value, onChange }: TimeInputProps) {
 }
 
 export default function Home() {
+
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("Stopwatch");
 
   const [beepTime, setBeepTime] = useState<Time>({
@@ -126,7 +130,19 @@ export default function Home() {
                 value={beepTime}
                 onChange={setBeepTime}
               />
-              <button className="bg-[#50c878] hover:bg-[#61d989] text-white rounded px-2 py-2 font-bold w-[150px] text-xl">Start</button>
+          <button
+            onClick={() =>
+              navigate("/run", {
+                state: {
+                  mode: "stopwatch",
+                  beepTime,
+                },
+              })
+            }
+            className="bg-[#50c878] hover:bg-[#61d989] text-white rounded px-2 py-2 font-bold w-[150px] text-xl"
+          >
+            Start
+          </button>
             </div>
           )}
 
@@ -146,7 +162,21 @@ export default function Home() {
                 onChange={setBeepTime}
               />
 
-              <button className="bg-[#50c878] hover:bg-[#61d989] text-white rounded px-2 py-2 font-bold w-[150px] text-xl">Start</button>
+              <button
+                onClick={() =>
+                  navigate("/run", {
+                    state: {
+                      mode: "timer",
+                      time: timerTime,
+                      beepTime,
+                    },
+                  })
+                }
+                className="bg-[#50c878] hover:bg-[#61d989] text-white rounded px-2 py-2 font-bold w-[150px] text-xl"
+              >
+                Start
+              </button>
+
             </div>
           )}
         </div>
