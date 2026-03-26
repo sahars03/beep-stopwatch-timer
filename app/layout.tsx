@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { TimerProvider } from "./context/TimerProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +24,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    // <html
+    //   lang="en"
+    //   className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    // >
+    //   <body className="min-h-full flex flex-col">{children}</body>
+    // </html>
+    <html>
+      <body>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-4">
+              <TimerProvider>{children}</TimerProvider>
+          </div>
+        </div>
+      </body>
     </html>
   );
 }
+
+
+// export default function RootLayout({ children }) {
+//   return (
+//     <html>
+//       <body>
+//         <TimerProvider>{children}</TimerProvider>
+//       </body>
+//     </html>
+//   );
