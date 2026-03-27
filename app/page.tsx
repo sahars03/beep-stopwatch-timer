@@ -70,7 +70,7 @@ export default function Home() {
           <button
             onClick={() => {
               setConfig({
-                mode: "stopwatch",
+                mode: "Stopwatch",
                 beepTime,
               });
               router.push("/run");
@@ -100,7 +100,7 @@ export default function Home() {
               <button
                 onClick={() => {
                   setConfig({
-                    mode: "timer",
+                    mode: "Timer",
                     time: timerTime,
                     beepTime,
                   });

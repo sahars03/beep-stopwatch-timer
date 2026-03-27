@@ -8,7 +8,7 @@ type Time = {
 };
 
 type TimerConfig = {
-  mode: "timer" | "stopwatch";
+  mode: "Timer" | "Stopwatch";
   time?: Time;
   beepTime: Time;
 };
