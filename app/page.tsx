@@ -32,7 +32,6 @@ export default function Home() {
 
   return (
     <div>
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-4">
         {/* Tabs */}
         <div className="flex border-b">
           <button
@@ -114,7 +113,6 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

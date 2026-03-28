@@ -1,10 +1,20 @@
 "use client";
 import { useTimer } from "../context/TimerProvider";
 import { useState, useEffect } from "react";
-import { Pause, Square, Home } from "lucide-react";
+import { Play, Pause, Square, Home } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 
 export default function RunPage() {
     const { config } = useTimer();
+
+    const router = useRouter();
+
+    const handleHome = () => {
+        router.push("/"); // go to homepage
+    };
+
+    const [isPaused, setIsPaused] = useState(false);
 
     // TODO: make this look better
     if (!config) return <p>No timer set</p>;
@@ -12,7 +22,7 @@ export default function RunPage() {
     const beepInterval = config.beepTime.hours * 3600 + config.beepTime.minutes * 60 + config.beepTime.seconds;
     const mode = config.mode;
 
-    console.log("interval: ", beepInterval);
+
 
     const initialSeconds =
     mode === "Timer" && config.time
@@ -21,6 +31,14 @@ export default function RunPage() {
         config.time.seconds
         : 0;
 
+        const handlePause = () => {
+    setIsPaused((prev) => !prev); // toggle
+};
+
+    const handleStop = () => {
+        setIsPaused(true); // freeze
+    setElapsedTotal(0);       // reset main clock
+    };
 
     // useEffect(() => {
     //     const interval = setInterval(() => {
@@ -30,44 +48,28 @@ export default function RunPage() {
     //     return () => clearInterval(interval);
     // }, []);
 
-    const [totalSeconds, setTotalSeconds] = useState(initialSeconds);
-
-    // fine
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTotalSeconds((prev) => {
-            if (mode === "Timer") {
-                return Math.max(0, prev - 1); // countdown
-            } else {
-                return prev + 1; // stopwatch
-            }
-            });
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [mode]);
-
-
     const [elapsed, setElapsed] = useState(0);
 
     // 0.05s = 50ms
 
-    useEffect(() => {
-        let startTime = performance.now();
-        let animationFrame: number;
+const [elapsedTotal, setElapsedTotal] = useState(0);
 
-    let lastCycle = 0;
+const rawSeconds =
+    mode === "Timer"
+        ? initialSeconds - Math.floor(elapsedTotal)
+        : Math.floor(elapsedTotal);
+
+const totalSeconds = Math.max(0, rawSeconds);
+
+useEffect(() => {
+    if (isPaused) return;
+
+    let startTime = performance.now() - elapsedTotal * 1000;
+    let animationFrame: number;
 
     const update = (currentTime: number) => {
-        const totalElapsed = (currentTime - startTime) / 1000;
-        const currentCycle = Math.floor(totalElapsed / beepInterval);
-
-        if (currentCycle > lastCycle) {
-            lastCycle = currentCycle;
-        }
-
-        const cycleTime = totalElapsed % beepInterval;
-        setElapsed(cycleTime);
+        const total = (currentTime - startTime) / 1000;
+        setElapsedTotal(total);
 
         animationFrame = requestAnimationFrame(update);
     };
@@ -75,8 +77,11 @@ export default function RunPage() {
     animationFrame = requestAnimationFrame(update);
 
     return () => cancelAnimationFrame(animationFrame);
-}, [beepInterval, mode]);
+}, [isPaused]);
     
+    
+
+
     useEffect(() => {
         if (elapsed >= beepInterval) {
             // beep sound
@@ -84,9 +89,32 @@ export default function RunPage() {
         }
     }, [elapsed, beepInterval]);
 
-    console.log("elapsed: ", elapsed);
-const progress =
-  beepInterval > 0 ? (elapsed / beepInterval) * 100 : 0;
+const cycleTime = elapsedTotal % beepInterval;
+const progress = beepInterval > 0 ? (cycleTime / beepInterval) * 100 : 0;
+
+// useEffect(() => {
+//     if (isPaused || isStopped) return; //  stop updating
+
+//     const interval = setInterval(() => {
+//         setTotalSeconds((prev) => {
+//             if (mode === "Timer") {
+//                 return Math.max(0, prev - 1);
+//             } else {
+//                 return prev + 1;
+//             }
+//         });
+//     }, 1000);
+
+//     return () => clearInterval(interval);
+// }, [mode, isPaused, isStopped]);
+
+
+
+
+
+
+
+
   return (
     <div className="w-full mt-4">
         
@@ -125,19 +153,24 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
           <span className="text-m text-gray-500">sec</span>
         </div>
       </div>
+
         <div className="flex items-center gap-8 mt-4">
         {/* Pause */}
-        <button className="p-2 bg-[#868ad9] hover:bg-[#a8acfb] rounded shadow">
-            <Pause size={22} color="#eee" />
+        <button   onClick={handlePause}
+ className="p-2 bg-[#5b5] hover:bg-[#7d7] rounded shadow">
+        {isPaused ? <Play size={22} color="#eee" /> : <Pause size={22} color="#eee"  />}
         </button>
 
         {/* Stop */}
-        <button className="p-2 bg-[#d55] hover:bg-[#f77] rounded shadow">
+        <button   onClick={handleStop}
+ className="p-2 bg-[#d55] hover:bg-[#f77] rounded shadow">
             <Square size={22} color="#eee" />
         </button>
 
         {/* Home */}
-        <button className="p-2 bg-[#5b5] hover:bg-[#7d7] rounded shadow">
+        <button   onClick={handleHome}
+className="p-2 bg-[#868ad9] hover:bg-[#a8acfb] rounded shadow">
+
             <Home size={22} color="#eee" />
         </button>
         </div>
