@@ -1,6 +1,7 @@
 "use client";
 import { useTimer } from "../context/TimerProvider";
 import { useState, useEffect } from "react";
+import { Pause, Square, Home } from "lucide-react";
 
 export default function RunPage() {
     const { config } = useTimer();
@@ -51,25 +52,25 @@ export default function RunPage() {
 
     // 0.05s = 50ms
 
-useEffect(() => {
-    let startTime = performance.now();
-    let animationFrame: number;
+    useEffect(() => {
+        let startTime = performance.now();
+        let animationFrame: number;
 
-let lastCycle = 0;
+    let lastCycle = 0;
 
-const update = (currentTime: number) => {
-    const totalElapsed = (currentTime - startTime) / 1000;
-    const currentCycle = Math.floor(totalElapsed / beepInterval);
+    const update = (currentTime: number) => {
+        const totalElapsed = (currentTime - startTime) / 1000;
+        const currentCycle = Math.floor(totalElapsed / beepInterval);
 
-    if (currentCycle > lastCycle) {
-        lastCycle = currentCycle;
-    }
+        if (currentCycle > lastCycle) {
+            lastCycle = currentCycle;
+        }
 
-    const cycleTime = totalElapsed % beepInterval;
-    setElapsed(cycleTime);
+        const cycleTime = totalElapsed % beepInterval;
+        setElapsed(cycleTime);
 
-    animationFrame = requestAnimationFrame(update);
-};
+        animationFrame = requestAnimationFrame(update);
+    };
 
     animationFrame = requestAnimationFrame(update);
 
@@ -124,6 +125,23 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
           <span className="text-m text-gray-500">sec</span>
         </div>
       </div>
+        <div className="flex items-center gap-8 mt-4">
+        {/* Pause */}
+        <button className="p-2 bg-[#868ad9] hover:bg-[#a8acfb] rounded shadow">
+            <Pause size={22} color="#eee" />
+        </button>
+
+        {/* Stop */}
+        <button className="p-2 bg-[#d55] hover:bg-[#f77] rounded shadow">
+            <Square size={22} color="#eee" />
+        </button>
+
+        {/* Home */}
+        <button className="p-2 bg-[#5b5] hover:bg-[#7d7] rounded shadow">
+            <Home size={22} color="#eee" />
+        </button>
+        </div>
+
         </div>
     </div>
     );
