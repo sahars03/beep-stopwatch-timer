@@ -13,6 +13,8 @@ type Time = {
 
 export default function Home() {
 
+
+  
   const [activeTab, setActiveTab] = useState("Stopwatch");
 
   const [beepTime, setBeepTime] = useState<Time>({
@@ -74,8 +76,7 @@ export default function Home() {
               });
               router.push("/run");
             }}
-            className="border"
-          >
+             className="mt-3 p-3 text-xl text-white bg-[#6959cf] hover:bg-[#7a6adf] rounded shadow">
             Start
           </button>
             </div>
@@ -105,8 +106,7 @@ export default function Home() {
                   });
                   router.push("/run");
                 }}
-            className="border"
-              >
+             className="mt-3 p-3 text-xl text-white bg-[#6959cf] hover:bg-[#7a6adf] rounded shadow">
                 Start
               </button>
 

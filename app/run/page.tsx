@@ -33,11 +33,16 @@ export default function RunPage() {
 
         const handlePause = () => {
     setIsPaused((prev) => !prev); // toggle
+    console.log("again, total seconds:", totalSeconds % 60);
+        console.log("again, raw seconds:", rawSeconds);
+
 };
 
     const handleStop = () => {
         setIsPaused(true); // freeze
     setElapsedTotal(0);       // reset main clock
+    console.log("total seconds:", totalSeconds % 60);
+    console.log("raw seconds:", rawSeconds);
 
     };
 
@@ -155,7 +160,7 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
 
         {/* Seconds */}
         <div className="flex flex-col items-center">
-          <p className="w-16 text-center text-5xl rounded-lg py-1">{rawSeconds >= 60 ? 0 : totalSeconds % 60}</p>
+          <p className="w-16 text-center text-5xl rounded-lg py-1">{totalSeconds % 60}</p>
           <span className="text-m text-gray-500">seconds</span>
         </div>
       </div>
