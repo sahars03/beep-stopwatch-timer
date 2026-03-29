@@ -38,6 +38,7 @@ export default function RunPage() {
     const handleStop = () => {
         setIsPaused(true); // freeze
     setElapsedTotal(0);       // reset main clock
+
     };
 
     // useEffect(() => {
@@ -79,15 +80,20 @@ useEffect(() => {
     return () => cancelAnimationFrame(animationFrame);
 }, [isPaused]);
     
-    
-
-
     useEffect(() => {
         if (elapsed >= beepInterval) {
             // beep sound
             setElapsed(0);
         }
     }, [elapsed, beepInterval]);
+
+useEffect(() => {
+    if (mode === "Timer" && elapsedTotal >= initialSeconds) {
+        setIsPaused(true);          // stop everything
+        setElapsedTotal(initialSeconds); // clamp exactly to end
+    }
+}, [elapsedTotal, mode, initialSeconds]);
+
 
 const cycleTime = elapsedTotal % beepInterval;
 const progress = beepInterval > 0 ? (cycleTime / beepInterval) * 100 : 0;
@@ -134,7 +140,7 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
         {/* Hours */}
         <div className="flex flex-col items-center">
           <p className="w-16 text-center text-5xl rounded-lg py-1">{Math.floor(totalSeconds / 3600)}</p>
-          <span className="text-m text-gray-500">hrs</span>
+          <span className="text-m text-gray-500">hours</span>
         </div>
 
         <span className="text-4xl">:</span>
@@ -142,15 +148,15 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
         {/* Minutes */}
         <div className="flex flex-col items-center">
           <p className="w-16 text-center text-5xl rounded-lg py-1">{Math.floor((totalSeconds % 3600) / 60)}</p>
-          <span className="text-m text-gray-500">min</span>
+          <span className="text-m text-gray-500">minutes</span>
         </div>
 
         <span className="text-4xl">:</span>
 
         {/* Seconds */}
         <div className="flex flex-col items-center">
-          <p className="w-16 text-center text-5xl rounded-lg py-1">{totalSeconds % 60}</p>
-          <span className="text-m text-gray-500">sec</span>
+          <p className="w-16 text-center text-5xl rounded-lg py-1">{rawSeconds >= 60 ? 0 : totalSeconds % 60}</p>
+          <span className="text-m text-gray-500">seconds</span>
         </div>
       </div>
 

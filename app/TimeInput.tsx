@@ -39,7 +39,7 @@ export default function TimeInput({ label, value, onChange }: TimeInputProps) {
             onChange={handleChange("hours")}
             className="w-16 text-center text-2xl border rounded-lg py-1"
           />
-          <span className="text-xs text-gray-500">hrs</span>
+          <span className="text-xs text-gray-500">hours</span>
         </div>
 
         <span className="text-2xl font-bold">:</span>
@@ -52,7 +52,7 @@ export default function TimeInput({ label, value, onChange }: TimeInputProps) {
             onChange={handleChange("minutes")}
             className="w-16 text-center text-2xl border rounded-lg py-1"
           />
-          <span className="text-xs text-gray-500">min</span>
+          <span className="text-xs text-gray-500">minutes</span>
         </div>
 
         <span className="text-2xl font-bold">:</span>
@@ -65,7 +65,7 @@ export default function TimeInput({ label, value, onChange }: TimeInputProps) {
             onChange={handleChange("seconds")}
             className="w-16 text-center text-2xl border rounded-lg py-1"
           />
-          <span className="text-xs text-gray-500">sec</span>
+          <span className="text-xs text-gray-500">seconds</span>
         </div>
       </div>
     </div>
