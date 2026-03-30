@@ -1,11 +1,24 @@
 "use client";
 import { useTimer } from "../context/TimerProvider";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Play, Pause, Square, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 
 export default function RunPage() {
+
+const beepRef = useRef<HTMLAudioElement | null>(null);
+const ringRef = useRef<HTMLAudioElement | null>(null);
+
+useEffect(() => {
+    beepRef.current = new Audio("/progress-bar-beep.wav");
+    ringRef.current = new Audio("/timer-finish.ogg");
+
+    // preload for no delay
+    beepRef.current.preload = "auto";
+    ringRef.current.preload = "auto";
+}, []);
+
     const { config } = useTimer();
 
     const router = useRouter();
@@ -22,6 +35,7 @@ export default function RunPage() {
     const beepInterval = config.beepTime.hours * 3600 + config.beepTime.minutes * 60 + config.beepTime.seconds;
     const mode = config.mode;
 
+    const isBeep = beepInterval > 0;
 
 
     const initialSeconds =
@@ -32,18 +46,18 @@ export default function RunPage() {
         : 0;
 
         const handlePause = () => {
+        //console.log("again, total seconds:", totalSeconds % 60);
+        //console.log("again, raw seconds:", rawSeconds);
     setIsPaused((prev) => !prev); // toggle
-    console.log("again, total seconds:", totalSeconds % 60);
-        console.log("again, raw seconds:", rawSeconds);
-
 };
 
     const handleStop = () => {
         setIsPaused(true); // freeze
     setElapsedTotal(0);       // reset main clock
-    console.log("total seconds:", totalSeconds % 60);
-    console.log("raw seconds:", rawSeconds);
-
+    //console.log("total seconds:", totalSeconds % 60);
+    //console.log("raw seconds:", rawSeconds);
+    lastCycleRef.current = 0;
+    hasRungRef.current = false;
     };
 
     // useEffect(() => {
@@ -60,12 +74,17 @@ export default function RunPage() {
 
 const [elapsedTotal, setElapsedTotal] = useState(0);
 
-const rawSeconds =
-    mode === "Timer"
-        ? initialSeconds - Math.floor(elapsedTotal)
-        : Math.floor(elapsedTotal);
+const displayTotalSeconds =
+  mode === "Timer"
+    ? Math.max(0, Math.ceil(initialSeconds - elapsedTotal))
+    : Math.max(0, Math.floor(elapsedTotal));
 
-const totalSeconds = Math.max(0, rawSeconds);
+const displayHours = Math.floor(displayTotalSeconds / 3600);
+const displayMinutes = Math.floor((displayTotalSeconds % 3600) / 60);
+const displaySeconds = displayTotalSeconds % 60;
+
+const lastCycleRef = useRef(0);
+const hasRungRef = useRef(false);
 
 useEffect(() => {
     if (isPaused) return;
@@ -74,14 +93,42 @@ useEffect(() => {
     let animationFrame: number;
 
     const update = (currentTime: number) => {
-        const total = (currentTime - startTime) / 1000;
+        let total = (currentTime - startTime) / 1000;
         setElapsedTotal(total);
+
+const currentCycle = Math.floor(total / beepInterval);
+
+if (currentCycle > lastCycleRef.current) {
+    if (beepRef.current && isBeep) {
+        beepRef.current.currentTime = 0;
+        beepRef.current.play();
+    }
+    lastCycleRef.current = currentCycle;
+}
+
+if (mode === "Timer" && total >= initialSeconds) {
+    total = initialSeconds;
+
+    if (!hasRungRef.current) {
+        if (ringRef.current) {
+            ringRef.current.currentTime = 0;
+            ringRef.current.play();
+        }
+        hasRungRef.current = true;
+    }
+
+    setElapsedTotal(total);
+    setIsPaused(true);
+    return;
+}
+
 
         animationFrame = requestAnimationFrame(update);
     };
 
     animationFrame = requestAnimationFrame(update);
 
+    
     return () => cancelAnimationFrame(animationFrame);
 }, [isPaused]);
     
@@ -144,7 +191,7 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
       <div className="flex items-center gap-2">
         {/* Hours */}
         <div className="flex flex-col items-center">
-          <p className="w-16 text-center text-5xl rounded-lg py-1">{Math.floor(totalSeconds / 3600)}</p>
+          <p className="w-16 text-center text-5xl rounded-lg py-1">{displayHours}</p>
           <span className="text-m text-gray-500">hours</span>
         </div>
 
@@ -152,7 +199,7 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
 
         {/* Minutes */}
         <div className="flex flex-col items-center">
-          <p className="w-16 text-center text-5xl rounded-lg py-1">{Math.floor((totalSeconds % 3600) / 60)}</p>
+          <p className="w-16 text-center text-5xl rounded-lg py-1">{displayMinutes}</p>
           <span className="text-m text-gray-500">minutes</span>
         </div>
 
@@ -160,7 +207,7 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
 
         {/* Seconds */}
         <div className="flex flex-col items-center">
-          <p className="w-16 text-center text-5xl rounded-lg py-1">{totalSeconds % 60}</p>
+          <p className="w-16 text-center text-5xl rounded-lg py-1">{displaySeconds}</p>
           <span className="text-m text-gray-500">seconds</span>
         </div>
       </div>
