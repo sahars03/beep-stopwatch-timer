@@ -1,7 +1,7 @@
 "use client";
 import { useTimer } from "../context/TimerProvider";
 import { useState, useEffect, useRef } from "react";
-import { Play, Pause, Square, Home } from "lucide-react";
+import { TimerReset, Play, Pause, Square, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 
@@ -98,14 +98,6 @@ useEffect(() => {
 
 const currentCycle = Math.floor(total / beepInterval);
 
-if (currentCycle > lastCycleRef.current) {
-    if (beepRef.current && isBeep) {
-        beepRef.current.currentTime = 0;
-        beepRef.current.play();
-    }
-    lastCycleRef.current = currentCycle;
-}
-
 if (mode === "Timer" && total >= initialSeconds) {
     total = initialSeconds;
 
@@ -122,6 +114,13 @@ if (mode === "Timer" && total >= initialSeconds) {
     return;
 }
 
+if (currentCycle > lastCycleRef.current) {
+    if (beepRef.current && isBeep && !hasRungRef.current) {
+        beepRef.current.currentTime = 0;
+        beepRef.current.play();
+    }
+    lastCycleRef.current = currentCycle;
+}
 
         animationFrame = requestAnimationFrame(update);
     };
@@ -149,29 +148,6 @@ useEffect(() => {
 
 const cycleTime = elapsedTotal % beepInterval;
 const progress = beepInterval > 0 ? (cycleTime / beepInterval) * 100 : 0;
-
-// useEffect(() => {
-//     if (isPaused || isStopped) return; //  stop updating
-
-//     const interval = setInterval(() => {
-//         setTotalSeconds((prev) => {
-//             if (mode === "Timer") {
-//                 return Math.max(0, prev - 1);
-//             } else {
-//                 return prev + 1;
-//             }
-//         });
-//     }, 1000);
-
-//     return () => clearInterval(interval);
-// }, [mode, isPaused, isStopped]);
-
-
-
-
-
-
-
 
   return (
     <div className="w-full mt-4">
@@ -222,7 +198,7 @@ className="h-full bg-blue-500"                style={{ width: `${progress}%` }}
         {/* Stop */}
         <button   onClick={handleStop}
  className="p-2 bg-[#d55] hover:bg-[#f77] rounded shadow">
-            <Square size={22} color="#eee" />
+           {hasRungRef.current ? <TimerReset size={22} color="#eee" />: <Square size={22} color="#eee" /> }
         </button>
 
         {/* Home */}
