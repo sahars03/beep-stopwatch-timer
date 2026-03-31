@@ -8,7 +8,7 @@ It has been built using Next.js, specifically React/Tailwind.
 
 - Simple interface for inputting and displaying time.
 - Optional beeps at regular intervals and a ring when the timer is finished.
-- Pause and reset options while the stopwatch/timer is being played.
+- Progress bar for showing the progress until the next beep.
 
 ## Requirements
 

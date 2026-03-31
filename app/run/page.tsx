@@ -130,7 +130,7 @@ export default function RunPage() {
 
             // detects completion of a beep interval
             if (currentCycle > lastCycleRef.current) {
-                if (beepRef.current && !beepFree && !hasRungRef.current) {
+                if (beepRef.current && (mode === "Stopwatch" || !beepFree) && !hasRungRef.current) {
                     beepRef.current.currentTime = 0;
                     beepRef.current.play();
                 }
