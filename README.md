@@ -50,4 +50,4 @@ npm run dev
 
 ![Timer in use](/assets/images/Timer%20in%20use.png "Timer in use.")
 
-You can also find a [Small stopwatch demo](https://github.com/user-attachments/assets/1a39add1-e12f-438f-89fa-f65d77d969fe).
+You can also find a [small stopwatch demo](https://github.com/user-attachments/assets/1a39add1-e12f-438f-89fa-f65d77d969fe).
