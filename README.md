@@ -39,3 +39,15 @@ npm run dev
 ```
 
 #### 4. open the link `http://localhost:3000` to use the application
+
+## Screenshots
+
+![Stopwatch setup](/assets/images/Stopwatch%20setup.png "Stopwatch setup.")
+
+![Timer setup](/assets/images/Timer%20setup.png "Timer setup.")
+
+![Stopwatch in use](/assets/images/Stopwatch%20in%20use.png "Stopwatch in use.")
+
+![Timer in use](/assets/images/Timer%20in%20use.png "Timer in use.")
+
+You can also find a [Small stopwatch demo](https://github.com/user-attachments/assets/1a39add1-e12f-438f-89fa-f65d77d969fe).
